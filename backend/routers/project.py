@@ -30,6 +30,10 @@ def get_project(project_id: str, db: Session = Depends(get_db)):
     parsed_project = parse_project(project)
     return parsed_project
     
+@router.get("/get_all", response_model=list[ProjectBaseResponse])
+def get_all_projects(db: Session = Depends(get_db)):
+    projects = db.query(Project).all()
+    return [parse_project(project) for project in projects]
 
 def parse_project(project: Project) -> ProjectBaseResponse:
     screw_list = []
@@ -50,3 +54,4 @@ def parse_project(project: Project) -> ProjectBaseResponse:
         screw_=screw_list,
     )
     return project_response
+
