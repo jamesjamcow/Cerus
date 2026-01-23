@@ -1,8 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from core.config import settings
+from routers import project, screws
+from db.database import create_tables
+
+create_tables()
 
 app = FastAPI(tittle = "Screwceus", description = "Learning the basics", version = "0.1.0")
+
 
 app.add_middleware(
         CORSMiddleware,
@@ -10,6 +15,8 @@ app.add_middleware(
         allow_headers=["*"],
     )
 
+app.include_router(project.router, prefix=settings.API_PREFIX)
+app.include_router(screws.router, prefix=settings.API_PREFIX)
 
 if __name__ == "__main__":
     import uvicorn

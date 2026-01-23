@@ -1,12 +1,14 @@
-from typing import List
+from typing import List, Optional
 from pydantic_settings import BaseSettings
 from pydantic import field_validator
 
+
 class Settings(BaseSettings):
-    DATABASE_URL: str 
+    DATABASE_URL: str = None
     API_PREFIX: str = "/api"
     DEBUG: bool = False
-    ALLOWED_HOSTS: str = []
+    ALLOWED_HOSTS: List[str] = []
+    ALLOWED_ORIGINS: str = ""
     
     @field_validator("ALLOWED_HOSTS")
     def parse_allowed_hosts(cls, v: str) -> List[str]:
