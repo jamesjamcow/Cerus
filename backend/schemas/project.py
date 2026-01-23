@@ -16,19 +16,19 @@ class ScrewBase(BaseModel):
     
 class ProjectBaseResponse(ProjectBase):
     screw_: List[ScrewBase] = []
-
+    id: str
     class Config:
         from_attributes = True
 
 class ScrewResponse(ScrewBase):
     amount: int
+    id: str
     project_id: str
 
     class Config:
         from_attributes = True
 
 class ScrewCreate(ScrewBase):
-    id: Optional[str] = None
     project_id: Optional[str] = None
     timecreated: Optional[datetime] = None
 

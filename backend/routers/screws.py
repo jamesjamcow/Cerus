@@ -3,7 +3,7 @@ from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, Cookie, Response, BackgroundTasks
 from sqlalchemy.orm import Session
 from db.database import get_db, SessionLocal
-from schemas.project import ProjectBase, ScrewCreate, ScrewResponse, ScrewUpdate, ProjectCreate, ScrewCreate
+from schemas.project import ProjectBase, ScrewCreate, ScrewResponse, ScrewUpdate, ProjectCreate, ScrewCreate, ScrewAdjustAmount
 from models.project import Project, Screw
 
 
@@ -51,13 +51,15 @@ def update_screw(screw_id: str, request: ScrewUpdate, db: Session = Depends(get_
     return screw
 
 @router.put("/adjust_amount/{screw_id}", response_model=ScrewResponse)
-def adjust_amount_screw(screw_id: str, request: ScrewUpdate, db: Session = Depends(get_db)):
+def adjust_amount_screw(screw_id: str, request: ScrewAdjustAmount, db: Session = Depends(get_db)):
     screw = db.query(Screw).filter(Screw.id == screw_id).first()
     if not screw:
         raise HTTPException(status_code=404, detail="Screw not found")
-
     
-    
+    if request.action == "increment":
+        screw.amount += 1
+    elif request.action == "decrement":
+        screw.amount = max(0, screw.amount - 1)
     db.commit()
     return screw
 
